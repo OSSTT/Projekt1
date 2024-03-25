@@ -1,7 +1,22 @@
+from pymongo import MongoClient
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from dotenv import load_dotenv
+import os
+
+# Laden der Umgebungsvariablen aus der .env-Datei
+load_dotenv()
+
+# Verbindung zur Cosmos DB herstellen
+connection_string = os.getenv("COSMOS_CONNECTION_STRING")
+client = MongoClient(connection_string)
+
+# Datenbank und Collections auswählen
+db = client['mdm']
+training_collection = db['Trainingdata']
+validation_collection = db['Validationdata']
 
 url = 'https://de.m.wikipedia.org/wiki/Demografie_Deutschlands#Bev%C3%B6lkerungsr%C3%BCckgang_bis_2060'
 page = requests.get(url)
@@ -26,15 +41,11 @@ if len(tables) >= 4:
         # Aufteilen der Daten in Trainings- und Validierungsdaten
         train_df, val_df = train_test_split(df, test_size=0.2, random_state=42)
 
-        # Speichern der Trainingsdaten
-        train_save_path = r'C:/Users/thasm/Desktop/Model Deployment & Maintenance/Projekt1/Daten/Trainingdata.csv'
-        train_df.to_csv(train_save_path, index=False)
-        print(f"Die Trainingsdaten wurden erfolgreich in die Datei '{train_save_path}' gespeichert.")
+        # Daten direkt in Cosmos DB hochladen
+        training_collection.insert_many(train_df.to_dict('records'))
+        validation_collection.insert_many(val_df.to_dict('records'))
 
-        # Speichern der Validierungsdaten
-        val_save_path = r'C:/Users/thasm/Desktop/Model Deployment & Maintenance/Projekt1/Daten/Validationdata.csv'
-        val_df.to_csv(val_save_path, index=False)
-        print(f"Die Validierungsdaten wurden erfolgreich in die Datei '{val_save_path}' gespeichert.")
+        print("Die Daten wurden erfolgreich in Azure Cosmos DB hochgeladen.")
     else:
         print("Keine Daten gefunden in der vierten Tabelle.")
 else:
