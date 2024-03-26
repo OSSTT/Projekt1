@@ -10,7 +10,7 @@ import os
 load_dotenv()
 
 # Verbindung zur Cosmos DB herstellen
-connection_string = os.getenv("COSMOS_CONNECTION_STRING")
+connection_string = os.getenv("CosmosConnectionString")
 client = MongoClient(connection_string)
 
 # Datenbank und Collections auswählen

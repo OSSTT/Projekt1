@@ -8,7 +8,7 @@ load_dotenv()
 
 def load_model_from_blob(container_name, model_file, save_path, new_model_name):
     # Verbindung zum Azure Blob Storage herstellen
-    azure_storage_connection_string = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
+    azure_storage_connection_string = os.getenv("AzureStorage")
     blob_service_client = BlobServiceClient.from_connection_string(azure_storage_connection_string)
 
     # Container Client erstellen oder referenzieren
