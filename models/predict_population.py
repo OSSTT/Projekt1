@@ -1,14 +1,13 @@
 import joblib
 import os
 from azure.storage.blob import BlobServiceClient
-from dotenv import load_dotenv
+from connection import connectionStorage
 
-# Laden der Umgebungsvariablen aus der .env-Datei
-load_dotenv()
+
 
 def load_model_from_blob(container_name, model_file, save_path, new_model_name):
     # Verbindung zum Azure Blob Storage herstellen
-    azure_storage_connection_string = os.getenv("AzureStorage")
+    azure_storage_connection_string = connectionStorage
     blob_service_client = BlobServiceClient.from_connection_string(azure_storage_connection_string)
 
     # Container Client erstellen oder referenzieren

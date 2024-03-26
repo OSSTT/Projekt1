@@ -3,15 +3,13 @@ from sklearn.linear_model import LinearRegression
 import joblib
 from pymongo import MongoClient
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
-from dotenv import load_dotenv
-import os
-
-# Laden der Umgebungsvariablen aus der .env-Datei
-load_dotenv()
+from azure.identity import DefaultAzureCredential
+from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
+from connection import connectionMongo
+from connection import connectionStorage
 
 # Lesen der Cosmos-Verbindungszeichenfolge aus der Umgebungsvariable
-cosmos_connection_string = os.getenv("COSMOS_CONNECTION_STRING")
-print("Cosmos Connection String:", cosmos_connection_string)
+cosmos_connection_string = connectionMongo
 
 def load_data_from_cosmos(collection_name):
     # Verbindung zur Cosmos DB herstellen
@@ -43,7 +41,7 @@ def train_and_save_model(data_df, model_file, container_prefix):
     joblib.dump(model, model_file)
 
     # Verbindung zum Azure Blob Storage herstellen
-    azure_storage_connection_string = os.getenv("AzureStorage")
+    azure_storage_connection_string = connectionStorage
     blob_service_client = BlobServiceClient.from_connection_string(azure_storage_connection_string)
 
     # Neue Container-Namen erstellen und überprüfen, ob sie bereits existieren

@@ -3,4 +3,5 @@
 __pycache__/
 *.py[cod]
 *$py.class
-.env
+connection.py
+connection1.py
