@@ -3,6 +3,4 @@
 __pycache__/
 *.py[cod]
 *$py.class
-connection.py
-connection1.py
-connection2.py
+daten
