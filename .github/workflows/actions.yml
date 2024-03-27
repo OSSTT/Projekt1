@@ -7,16 +7,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        using: 'node20' # Verwenden von Node.js v20 für alle Schritte
     steps:
 
       - name: checkout repo content
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # Aktualisierte Version
 
       - name: setup python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5 # Aktualisierte Version
         with:
           python-version: '3.x' # Korrigieren Sie die Python-Version entsprechend
           cache: 'pip'
