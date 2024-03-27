@@ -15,7 +15,7 @@ jobs:
       - name: setup python
         uses: actions/setup-python@v5 # Aktualisierte Version
         with:
-          python-version: '3.x' # Korrigieren Sie die Python-Version entsprechend
+          python-version: '3.12.1' # Korrigieren Sie die Python-Version entsprechend
           cache: 'pip'
 
       - name: install python packages
