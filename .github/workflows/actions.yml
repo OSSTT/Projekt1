@@ -25,8 +25,8 @@ jobs:
         working-directory: ./Scraper
         run: |
           python scraper.py \
-            -u "${{ secrets.CONNECTIONMONGO }}" \
-            -c "${{ secrets.CONNECTIONSTORAGE }}"
+            -u "${{ secrets.Mongo_URI }}" \
+            -c "${{ secrets.STORAGE }}"
 
       - name: create Model and Upload
         working-directory: ./models
