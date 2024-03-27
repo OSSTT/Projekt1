@@ -25,11 +25,12 @@ jobs:
         working-directory: ./Scraper
         run: |
           python scraper.py \
-            -u "${{ secrets.Mongo_URI }}" \
-            -c "${{ secrets.STORAGE }}"
+            -u "${{ secrets.Mongo_URI }}" 
+            
 
       - name: create Model and Upload
         working-directory: ./models
         run: |
           python createModel.py \
-            -c "${{ secrets.CONNECTIONSTORAGE }}"
+            -u "${{ secrets.MONGO_URI }}" \
+            -c "${{ secrets.STORAGE }}"
