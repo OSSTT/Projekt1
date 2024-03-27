@@ -7,25 +7,28 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        using: 'node20' # Verwenden von Node.js v20 für alle Schritte
     steps:
 
       - name: checkout repo content
-        uses: actions/checkout@v3 # checkout the repository content to github runner
+        uses: actions/checkout@v3
 
       - name: setup python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12.1' # install the python version needed
+          python-version: '3.x' # Korrigieren Sie die Python-Version entsprechend
           cache: 'pip'
-          
+
       - name: install python packages
         run: pip install -q -r requirements.txt
-          
+
       - name: scrape Wiki and load the Data
         working-directory: ./Scraper
         env:
           CONNECTIONMONGO: ${{ secrets.CONNECTIONMONGO }}
-        run: python scraper.py 
+        run: python scraper.py
 
       - name: create Model and Upload
         working-directory: ./models
@@ -33,4 +36,3 @@ jobs:
           CONNECTIONMONGO: ${{ secrets.CONNECTIONMONGO }}
           CONNECTIONSTORAGE: ${{ secrets.CONNECTIONSTORAGE }}
         run: python createModel.py
-
