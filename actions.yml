@@ -13,12 +13,22 @@ jobs:
         uses: actions/checkout@v3 # checkout the repository content to github runner
 
       - name: setup python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v2
         with:
-          python-version: '3.12.1' # install the python version needed
+          python-version: '3.x' # Stelle sicher, dass die richtige Python-Version hier angegeben ist
+          architecture: 'x64'  # Je nach Bedarf anpassen
           cache: 'pip'
           
       - name: install python packages
         run: pip install -r requirements.txt
 
-        
+      - name: Run scraper.py
+        env:
+          CONNECTIONMONGO: ${{ secrets.CONNECTIONMONGO }}
+        run: python "C:\Users\thasm\Desktop\Model Deployment & Maintenance\Projekt1\Scraper\scraper.py"
+
+      - name: Run createModel.py
+        env:
+          CONNECTIONMONGO: ${{ secrets.CONNECTIONMONGO }}
+          CONNECTIONSTORAGE: ${{ secrets.CONNECTIONSTORAGE }}
+        run: python "C:\Users\thasm\Desktop\Model Deployment & Maintenance\Projekt1\models\createModel.py"
