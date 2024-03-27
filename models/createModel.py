@@ -4,15 +4,18 @@ import joblib
 from pymongo import MongoClient
 from azure.storage.blob import BlobServiceClient
 from azure.identity import DefaultAzureCredential
-from connection import connectionMongo
-from connection import connectionStorage
+import argparse
 
 # Lesen der Cosmos-Verbindungszeichenfolge aus der Umgebungsvariable
-cosmos_connection_string = connectionMongo
+parser = argparse.ArgumentParser()
+parser.add_argument('-u', '--uri', required=True, help="MongoDB URI with username/password")
+parser.add_argument('-c', '--connection', required=True, help="Azure Blob Storage connection string")
+args = parser.parse_args()
 
-def load_data_from_cosmos(collection_name):
+
+def load_data_from_cosmos(collection_name, uri):
     # Verbindung zur Cosmos DB herstellen
-    client = MongoClient(cosmos_connection_string)
+    client = MongoClient(uri)
     db = client['mdm']
     collection = db[collection_name]
 
@@ -24,7 +27,7 @@ def load_data_from_cosmos(collection_name):
 
     return df
 
-def train_and_save_model(data_df, model_file, container_prefix):
+def train_and_save_model(data_df, model_file, container_prefix, storage_connection_string):
     # Datenbereinigung
     data_df['Bevölkerung'] = data_df['Bevölkerung'].str.replace(' ', '').astype(float)
     
@@ -40,8 +43,7 @@ def train_and_save_model(data_df, model_file, container_prefix):
     joblib.dump(model, model_file)
 
     # Verbindung zum Azure Blob Storage herstellen
-    azure_storage_connection_string = connectionStorage
-    blob_service_client = BlobServiceClient.from_connection_string(azure_storage_connection_string)
+    blob_service_client = BlobServiceClient.from_connection_string(storage_connection_string)
 
     # Neue Container-Namen erstellen und überprüfen, ob sie bereits existieren
     i = 1
@@ -63,9 +65,9 @@ def train_and_save_model(data_df, model_file, container_prefix):
         blob_client.upload_blob(data)
 
 # Trainiere und lade das Modell für die Trainingsdaten hoch
-training_data = load_data_from_cosmos("Trainingdata")
-train_and_save_model(training_data, r'C:\Users\thasm\Desktop\Model Deployment & Maintenance\Projekt1\models\trained_model_trainingdata.pkl', 'trainingdata-models')
+training_data = load_data_from_cosmos("Trainingdata", args.uri)
+train_and_save_model(training_data, r'C:\Users\thasm\Desktop\Model Deployment & Maintenance\Projekt1\models\trained_model_trainingdata.pkl', 'trainingdata-models', args.connection)
 
 # Trainiere und lade das Modell für die Validierungsdaten hoch
-validation_data = load_data_from_cosmos("Validationdata")
-train_and_save_model(validation_data, r'C:\Users\thasm\Desktop\Model Deployment & Maintenance\Projekt1\models\trained_model_validationdata.pkl', 'validationdata-models')
+validation_data = load_data_from_cosmos("Validationdata", args.uri)
+train_and_save_model(validation_data, r'C:\Users\thasm\Desktop\Model Deployment & Maintenance\Projekt1\models\trained_model_validationdata.pkl', 'validationdata-models', args.connection)

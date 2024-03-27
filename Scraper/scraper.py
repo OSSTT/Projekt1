@@ -3,11 +3,15 @@ from bs4 import BeautifulSoup
 import requests
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from connection1 import connectionMongo1
+import argparse
 
-# Verbindung zur Cosmos DB herstellen
-connection_string = connectionMongo1
-client = MongoClient(connection_string)
+# Verbindung zur MongoDB herstellen
+parser = argparse.ArgumentParser()
+parser.add_argument('-u', '--uri', required=True, help="MongoDB URI with username/password")
+args = parser.parse_args()
+
+# Verbindung zur MongoDB herstellen
+client = MongoClient(args.uri)
 
 # Datenbank und Collections auswählen
 db = client['mdm']
@@ -37,11 +41,11 @@ if len(tables) >= 4:
         # Aufteilen der Daten in Trainings- und Validierungsdaten
         train_df, val_df = train_test_split(df, test_size=0.2, random_state=42)
 
-        # Daten direkt in Cosmos DB hochladen
+        # Daten direkt in MongoDB hochladen
         training_collection.insert_many(train_df.to_dict('records'))
         validation_collection.insert_many(val_df.to_dict('records'))
 
-        print("Die Daten wurden erfolgreich in Azure Cosmos DB hochgeladen.")
+        print("Die Daten wurden erfolgreich in MongoDB hochgeladen.")
     else:
         print("Keine Daten gefunden in der vierten Tabelle.")
 else:

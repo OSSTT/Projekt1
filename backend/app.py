@@ -2,16 +2,19 @@ from flask import Flask, send_file, request
 import joblib
 import os
 from azure.storage.blob import BlobServiceClient
-from connection2 import connectionStorage
-
+import argparse
 
 # Laden des Flask-App-Objekts
 app = Flask(__name__, static_url_path='', static_folder='../frontend')
 
+# Argumentparser für den Verbindungsstring zum Azure Blob Storage
+parser = argparse.ArgumentParser()
+parser.add_argument('-c', '--connection', required=True, help="Azure Blob Storage connection string")
+args = parser.parse_args()
+
 # Funktion zum Laden des Modells aus dem Azure Blob Storage
-def load_model_from_blob(container_name, model_file, save_path, new_model_name):
-    azure_storage_connection_string = connectionStorage
-    blob_service_client = BlobServiceClient.from_connection_string(azure_storage_connection_string)
+def load_model_from_blob(container_name, model_file, save_path, new_model_name, connection_string):
+    blob_service_client = BlobServiceClient.from_connection_string(connection_string)
     container_client = blob_service_client.get_container_client(container_name)
     blob_client = container_client.get_blob_client(model_file)
     os.makedirs(save_path, exist_ok=True)
@@ -23,10 +26,10 @@ def load_model_from_blob(container_name, model_file, save_path, new_model_name):
 # Laden der trainierten Modelle aus Azure Blob Storage
 model_trainingdata = load_model_from_blob('trainingdata-models-1', 'trained_model_trainingdata.pkl', 
                                           r'C:\Users\thasm\Desktop\Model Deployment & Maintenance\Projekt1\models', 
-                                          'AZmodel_trainingdata.pkl')
+                                          'AZmodel_trainingdata.pkl', args.connection)
 model_validationdata = load_model_from_blob('validationdata-models-1', 'trained_model_validationdata.pkl', 
                                             r'C:\Users\thasm\Desktop\Model Deployment & Maintenance\Projekt1\models', 
-                                            'AZmodel_validationdata.pkl')
+                                            'AZmodel_validationdata.pkl', args.connection)
 
 # Routen definieren
 @app.route("/")

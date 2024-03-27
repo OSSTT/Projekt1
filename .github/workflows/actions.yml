@@ -23,13 +23,8 @@ jobs:
 
       - name: scrape Wiki and load the Data
         working-directory: ./Scraper
-        env:
-          CONNECTIONMONGO: ${{ secrets.CONNECTIONMONGO }}
-        run: python scraper.py
+        run: python scraper.py -u "${{secrets.CONNECTIONMONGO}}" -c "${{secrets.CONNECTIONSTORAGE}}"
 
       - name: create Model and Upload
         working-directory: ./models
-        env:
-          CONNECTIONMONGO: ${{ secrets.CONNECTIONMONGO }}
-          CONNECTIONSTORAGE: ${{ secrets.CONNECTIONSTORAGE }}
-        run: python createModel.py
+        run: python createModel.py -c "${{secrets.CONNECTIONSTORAGE}}"
