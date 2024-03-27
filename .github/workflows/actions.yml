@@ -19,15 +19,18 @@ jobs:
           cache: 'pip'
           
       - name: install python packages
-        run: pip install -r requirements.txt
-
-      - name: Run scraper.py
+        run: pip install -q -r requirements.txt
+          
+      - name: scrape Wiki and load the Data
+        working-directory: ./Scraper
         env:
           CONNECTIONMONGO: ${{ secrets.CONNECTIONMONGO }}
-        run: python "C:\Users\thasm\Desktop\Model Deployment & Maintenance\Projekt1\Scraper\scraper.py"
+        run: python scraper.py 
 
-      - name: Run createModel.py
+      - name: create Model and Upload
+        working-directory: ./models
         env:
           CONNECTIONMONGO: ${{ secrets.CONNECTIONMONGO }}
           CONNECTIONSTORAGE: ${{ secrets.CONNECTIONSTORAGE }}
-        run: python "C:\Users\thasm\Desktop\Model Deployment & Maintenance\Projekt1\models\createModel.py"
+        run: python createModel.py
+

@@ -3,11 +3,7 @@ from bs4 import BeautifulSoup
 import requests
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from dotenv import load_dotenv
-import os
 from connection1 import connectionMongo1
-# Laden der Umgebungsvariablen aus der .env-Datei
-load_dotenv()
 
 # Verbindung zur Cosmos DB herstellen
 connection_string = connectionMongo1

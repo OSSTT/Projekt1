@@ -2,9 +2,8 @@ import pandas as pd
 from sklearn.linear_model import LinearRegression
 import joblib
 from pymongo import MongoClient
-from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
+from azure.storage.blob import BlobServiceClient
 from azure.identity import DefaultAzureCredential
-from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 from connection import connectionMongo
 from connection import connectionStorage
 
