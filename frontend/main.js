@@ -8,8 +8,8 @@ function predictPopulation() {
         .then(data => {
             // Vorhersagen anzeigen
             document.getElementById("predictionResult").innerHTML = `
-                <p>Vorhersage Training-Model: ${data.prediction_trainingdata}</p>
-                <p>Vorhersage Validation-Model: ${data.prediction_validationdata}</p>
+                <p>Trained model: ${data.prediction_trainingdata.toLocaleString()} Einwohner</p>
+                <p>Validated model: ${data.prediction_validationdata.toLocaleString()} Einwohner</p>
             `;
         })
         .catch(error => {

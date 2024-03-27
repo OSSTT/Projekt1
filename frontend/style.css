@@ -1,0 +1,23 @@
+/* styles.css */
+.title {
+    margin-top: 20px; /* Oberer Abstand für den Titel */
+}
+
+.input-group {
+    margin-top: 50px; /* Oberer Abstand für die Eingabegruppe */
+}
+
+.btn {
+    margin-left:30px; /* Linker Abstand für den Button */
+}
+
+#predictionResult {
+    margin-top: 20px;
+}
+
+#titelVorhersage {
+    font-weight: bold; 
+    font-size: 20px;
+    margin-top: 40px;
+}
+
