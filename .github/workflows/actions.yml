@@ -10,10 +10,10 @@ jobs:
     steps:
 
       - name: checkout repo content
-        uses: actions/checkout@v3 # checkout the repository content to github runner
+        uses: actions/checkout@v4 # Aktualisierte Version von actions/checkout verwenden
 
       - name: setup python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3 # Aktualisierte Version von actions/setup-python verwenden
         with:
           python-version: '3.x' # Stelle sicher, dass die richtige Python-Version hier angegeben ist
           architecture: 'x64'  # Je nach Bedarf anpassen
