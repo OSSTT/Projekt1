@@ -2,15 +2,9 @@ from flask import Flask, send_file, request
 import joblib
 import os
 from azure.storage.blob import BlobServiceClient
-import argparse
 
 # Laden des Flask-App-Objekts
 app = Flask(__name__, static_url_path='', static_folder='../frontend')
-
-# Argumentparser für den Verbindungsstring zum Azure Blob Storage
-parser = argparse.ArgumentParser()
-parser.add_argument('-c', '--connection', required=True, help="Azure Blob Storage connection string")
-args = parser.parse_args()
 
 # Funktion zum Laden des Modells aus dem Azure Blob Storage
 def load_model_from_blob(container_name, model_file, save_path, new_model_name, connection_string):
@@ -24,12 +18,16 @@ def load_model_from_blob(container_name, model_file, save_path, new_model_name, 
     return joblib.load(local_model_path)
 
 # Laden der trainierten Modelle aus Azure Blob Storage
+azure_connection_string = os.environ.get('AZURE_STORAGE_CONNECTION_STRING')
+if not azure_connection_string:
+    raise ValueError("Azure Blob Storage connection string is not provided in the environment variable 'AZURE_STORAGE_CONNECTION_STRING'.")
+
 model_trainingdata = load_model_from_blob('trainingdata-models-1', 'trained_model_trainingdata.pkl', 
                                           r'C:\Users\thasm\Desktop\Model Deployment & Maintenance\Projekt1\models', 
-                                          'AZmodel_trainingdata.pkl', args.connection)
+                                          'AZmodel_trainingdata.pkl', azure_connection_string)
 model_validationdata = load_model_from_blob('validationdata-models-1', 'trained_model_validationdata.pkl', 
                                             r'C:\Users\thasm\Desktop\Model Deployment & Maintenance\Projekt1\models', 
-                                            'AZmodel_validationdata.pkl', args.connection)
+                                            'AZmodel_validationdata.pkl', azure_connection_string)
 
 # Routen definieren
 @app.route("/")
