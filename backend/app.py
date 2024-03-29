@@ -57,12 +57,12 @@ def predict():
     
 @app.route("/test_prediction")
 def test_prediction():
-    # Hier rufe die Vorhersagefunktionen auf
+    # Vorhersagefunktion aufrufen
     year = 2030  # Ein Beispieljahr für den Test
     prediction_trainingdata = round(model_trainingdata.predict([[year]])[0])
     prediction_validationdata = round(model_validationdata.predict([[year]])[0])
 
-    # Gib die Vorhersagen zurück
+    # Vorhersage zurückgeben
     return {
         "prediction_trainingdata": prediction_trainingdata,
         "prediction_validationdata": prediction_validationdata

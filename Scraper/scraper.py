@@ -36,7 +36,7 @@ if len(tables) >= 4:
             data_rows.append(row_data)
 
     if data_rows:
-        df = pd.DataFrame(data_rows, columns=['Jahr', 'Bevölkerung'])  # Benenne die Spalten entsprechend
+        df = pd.DataFrame(data_rows, columns=['Jahr', 'Bevölkerung'])  # Spalten benennen
 
         # Aufteilen der Daten in Trainings- und Validierungsdaten
         train_df, val_df = train_test_split(df, test_size=0.2, random_state=42)
