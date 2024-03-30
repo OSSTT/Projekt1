@@ -31,6 +31,13 @@ jobs:
       - name: create Model and Upload
         working-directory: ./models
         run: |
-          python createModel.py \
+          python createLinearModel.py \
+            -u "${{ secrets.MONGO_URI }}" \
+            -c "${{ secrets.STORAGE }}"
+
+      - name: create Model and Upload
+        working-directory: ./models
+        run: |
+          python createRandomForest.py \
             -u "${{ secrets.MONGO_URI }}" \
             -c "${{ secrets.STORAGE }}"
