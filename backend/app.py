@@ -22,10 +22,10 @@ azure_connection_string = os.environ.get('AZURE_STORAGE_CONNECTION_STRING')
 if not azure_connection_string:
     raise ValueError("Azure Blob Storage connection string is not provided in the environment variable 'AZURE_STORAGE_CONNECTION_STRING'.")
 
-model_Linear = load_model_from_blob('linear-model-1', 'linear-model.pkl', 
+model_Linear = load_model_from_blob('linear-model-data1', 'linear-model.pkl', 
                                           r'C:\Users\thasm\Desktop\Model Deployment & Maintenance\Projekt1\models', 
                                           'AZmodel_linearModel.pkl', azure_connection_string)
-model_RandomForest = load_model_from_blob('random-forest-model-1', 'random-forest-model.pkl', 
+model_RandomForest = load_model_from_blob('random-forest-model-data1', 'random-forest-model.pkl', 
                                             r'C:\Users\thasm\Desktop\Model Deployment & Maintenance\Projekt1\models', 
                                             'AZmodel_RandomForest.pkl', azure_connection_string)
 
@@ -92,6 +92,7 @@ def get_mse():
     mse_data = {
         "linear_model": linear_mse_contents,
         "random_forest_model": random_forest_mse_contents
+        
     }
 
     return jsonify(mse_data)

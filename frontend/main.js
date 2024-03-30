@@ -1,34 +1,88 @@
-function predictPopulation() {
-    // Wert aus dem Eingabefeld für das Jahr erhalten
-    var year = document.getElementById("yearInput").value;
-
-    // GET-Anfrage an die Flask-Route senden, um die Vorhersagen und MSE-Werte zu erhalten
-    fetch("/predict?year=" + year)
-        .then(response => response.json())
-        .then(data => {
-            // Vorhersagen anzeigen
-            document.getElementById("predictionResult").innerHTML = `
-                <p>Vorhersage Linear Model: ${data.prediction_Linearmodel.toLocaleString()} Einwohner</p>
-                <p>Vorhersage Random Forest: ${data.prediction_RandomForest.toLocaleString()} Einwohner</p>
-            `;
-            
-            // GET-Anfrage an die Flask-Route senden, um die MSE-Werte zu erhalten
-            fetch("/mse")
-                .then(response => response.json())
-                .then(mseData => {
-                    // MSE-Werte anzeigen
-                    document.getElementById("mseResult").innerHTML = `
-                        <p>Trainings-MSE Linear Model: ${mseData.train_mse_lm}</p>
-                        <p>Validierungs-MSE Linear Model: ${mseData.valid_mse_lm}</p>
-                        <p>Trainings-MSE Random Forest: ${mseData.train_mse_rf}</p>
-                        <p>Validierungs-MSE Random Forest: ${mseData.valid_mse_rf}</p>
-                    `;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+// Funktion zum Formatieren der Bevölkerungszahlen
+function formatPopulation(population) {
+    return population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
+
+function predictPopulation() {
+    // Wert aus dem Eingabefeld abrufen
+    var year = document.getElementById('yearInput').value;
+
+    // AJAX-Anfrage an den Flask-Server senden, um Vorhersagen zu erhalten
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/predict?year=' + year, true);
+
+    // Callback-Funktion für den Abschluss der Anfrage
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            // JSON-Daten von der Antwort erhalten
+            var data = JSON.parse(xhr.responseText);
+
+            // Vorhersagen auf der Seite anzeigen
+            document.getElementById('predictionResult').innerHTML = `
+            <p>Vorhersage mit dem linearen Modell: ${formatPopulation(data.prediction_LinearModel)}</p>
+            <p>Vorhersage mit dem Random-Forest-Modell: ${formatPopulation(data.prediction_RandomForest)}</p>
+            `;
+        } else {
+            console.error('Fehler beim Abrufen der Vorhersagen.');
+        }
+    };
+
+    // Fehlerbehandlung für die AJAX-Anfrage
+    xhr.onerror = function () {
+        console.error('Fehler beim Senden der Anfrage.');
+    };
+
+    // Anfrage senden
+    xhr.send();
+}
+
+// Funktion zum Abrufen und Anzeigen der MSE-Werte
+function getMSE() {
+    // AJAX-Anfrage an den Flask-Server senden, um MSE-Werte zu erhalten
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/mse', true);
+
+    // Callback-Funktion für den Abschluss der Anfrage
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            // JSON-Daten von der Antwort erhalten
+            var mseData = JSON.parse(xhr.responseText);
+
+            // MSE-Werte auf der Seite anzeigen
+            var mseHtml = '';
+            for (var model in mseData) {
+                mseHtml += `<h3>${model}</h3>`;
+                for (var fileType in mseData[model]) {
+                    mseHtml += `<p>${fileType}: ${mseData[model][fileType]}</p>`;
+                }
+            }
+            document.getElementById('mseResults').innerHTML = mseHtml;
+        } else {
+            console.error('Fehler beim Abrufen der MSE-Werte.');
+        }
+    };
+
+    // Fehlerbehandlung für die AJAX-Anfrage
+    xhr.onerror = function () {
+        console.error('Fehler beim Senden der Anfrage.');
+    };
+
+    // Anfrage senden
+    xhr.send();
+}
+
+// Funktion zum Anzeigen oder Ausblenden der MSE-Werte
+function toggleMSE() {
+    var mseResults = document.getElementById('mseResults');
+    if (mseResults.style.display === 'none') {
+        getMSE();
+        mseResults.style.display = 'block';
+    } else {
+        mseResults.style.display = 'none';
+    }
+}
+
+// Aufrufen der Funktion zum Abrufen der MSE-Werte beim Laden der Seite
+window.onload = function () {
+    getMSE();
+};
